@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <queries>
+        <package android:name="com.scl.rdservice" />
 
+        <package android:name="com.mantra.mis100v2.rdservice" />
+
+        <package android:name="in.gov.uidai.facerd" />
+
+        <intent>
+            <action android:name="in.gov.uidai.rdservice.fp.CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="in.gov.uidai.rdservice.iris.CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="in.gov.uidai.rdservice.face.CAPTURE" />
+        </intent>
+    </queries>
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

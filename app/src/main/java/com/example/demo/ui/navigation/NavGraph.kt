@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.demo.ui.screens.GithubUsersScreen
 import com.example.demo.ui.screens.HomeScreen
 import com.example.demo.ui.screens.ReportsScreen
 import com.example.demo.ui.screens.ProfileScreen
@@ -13,6 +14,7 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Reports : Screen("reports")
     object Profile : Screen("profile")
+    object Github : Screen("github") // Naya Screen add kiya
 }
 
 @Composable
@@ -24,5 +26,7 @@ fun NavGraph(navController: NavHostController) {
         composable(Screen.Home.route) { HomeScreen() }
         composable(Screen.Reports.route) { ReportsScreen() }
         composable(Screen.Profile.route) { ProfileScreen() }
+        // Naya composable route
+        composable(Screen.Github.route) { GithubUsersScreen() }
     }
 }

@@ -7,7 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -33,16 +38,27 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     bottomBar = {
+                        // MainActivity.kt ke andar
                         NavigationBar {
-                            val items = listOf(Screen.Home, Screen.Reports, Screen.Profile)
+                            // List me Screen.Github add kar diya
+                            val items = listOf(Screen.Home, Screen.Reports, Screen.Github, Screen.Profile)
+
                             items.forEach { screen ->
                                 NavigationBarItem(
-                                    icon = { Icon(Icons.Default.Menu, contentDescription = null) },
+                                    icon = {
+                                        // Alag screens ke liye alag icons (Optional par acha lagta hai)
+                                        val icon = when(screen) {
+                                            Screen.Home -> Icons.Default.Home
+                                            Screen.Github -> Icons.Default.Person
+                                            Screen.Reports -> Icons.Default.List
+                                            else -> Icons.Default.AccountCircle
+                                        }
+                                        Icon(icon, contentDescription = null)
+                                    },
                                     label = { Text(screen.route.replaceFirstChar { it.uppercase() }) },
                                     selected = currentRoute == screen.route,
                                     onClick = {
                                         navController.navigate(screen.route) {
-                                            // Tab switch logic: stack clean rakhta hai
                                             popUpTo(navController.graph.startDestinationId) { saveState = true }
                                             launchSingleTop = true
                                             restoreState = true

@@ -34,7 +34,7 @@ fun GithubUsersScreen(viewModel: GithubViewModel = viewModel()) {
         }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2), // Ek row me 2 card
+            columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(8.dp)
         ) {
             items(viewModel.users) { user ->

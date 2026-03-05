@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import androidx.core.content.edit
 
 class SessionManager(context: Context) {
     private val prefs: SharedPreferences = 
@@ -13,7 +14,7 @@ class SessionManager(context: Context) {
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
     fun saveToken(token: String) {
-        prefs.edit().putString("auth_token", token).apply()
+        prefs.edit { putString("auth_token", token) }
         _isLoggedIn.value = true
     }
 
@@ -22,7 +23,7 @@ class SessionManager(context: Context) {
     }
 
     fun clearSession() {
-        prefs.edit().clear().apply()
+        prefs.edit { clear() }
         _isLoggedIn.value = false
     }
 }

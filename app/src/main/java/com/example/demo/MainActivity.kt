@@ -53,8 +53,6 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
-
-                // Token expiry aur manual logout dono ko handle karega
                 val isTokenExpired by authViewModel.tokenExpiredEvent.collectAsState()
                 
                 LaunchedEffect(isTokenExpired) {

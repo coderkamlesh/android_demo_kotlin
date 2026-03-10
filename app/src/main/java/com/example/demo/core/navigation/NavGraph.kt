@@ -1,64 +1,71 @@
 package com.example.demo.core.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.example.demo.features.home.ui.HomeScreen
-import com.example.demo.features.reports.ui.ReportsScreen
-import com.example.demo.features.profile.ui.ProfileScreen
-import com.example.demo.features.auth.ui.LoginScreen
-import com.example.demo.features.auth.ui.OtpScreen
-import com.example.demo.features.auth.viewmodel.AuthViewModel
-
-sealed class Screen(val route: String) {
-    object Home : Screen("home")
-    object Reports : Screen("reports")
-    object Profile : Screen("profile")
-    object Login : Screen("login")
-    object Otp : Screen("otp/{username}/{password}") {
-        fun createRoute(username: String, password: String) = "otp/$username/$password"
-    }
-}
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.*
+import com.example.demo.core.datastore.SessionManager
+import com.example.demo.features.auth.presentation.ui.LoginScreen
+import com.example.demo.features.auth.presentation.ui.OtpScreen
+import com.example.demo.features.home.presentation.ui.HomeScreen
+import com.example.demo.features.profile.presentation.ui.ProfileScreen
+import com.example.demo.features.reports.presentation.ui.ReportsScreen
 
 @Composable
-fun NavGraph(
-    navController: NavHostController,
-    startDestination: String,
-    authViewModel: AuthViewModel
-) {
-    NavHost(
-        navController = navController,
-        startDestination = startDestination
-    ) {
-        composable(Screen.Login.route) {
-            LoginScreen(navController, authViewModel)
-        }
+fun NavGraph() {
 
-        composable(
-            route = Screen.Otp.route,
-            arguments = listOf(
-                navArgument("username") { type = NavType.StringType },
-                navArgument("password") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            val username = backStackEntry.arguments?.getString("username") ?: ""
-            val password = backStackEntry.arguments?.getString("password") ?: ""
-            OtpScreen(navController, authViewModel, username, password)
-        }
+    val navController = rememberNavController()
+    val context = LocalContext.current
+    val sessionManager = remember { SessionManager(context.applicationContext) }
 
-        composable(Screen.Home.route) {
-            HomeScreen()
-        }
+    val token by sessionManager.token.collectAsState(initial = null)
 
-        composable(Screen.Reports.route) {
-            ReportsScreen()
-        }
+    val startDestination = if (token.isNullOrEmpty()) {
+        Routes.Login.route
+    } else {
+        Routes.Home.route
+    }
 
-        composable(Screen.Profile.route) {
-            ProfileScreen(navController, authViewModel)
+    Scaffold(
+        bottomBar = {
+            val route = navController.currentBackStackEntry?.destination?.route
+            if (route == Routes.Home.route ||
+                route == Routes.Reports.route ||
+                route == Routes.Profile.route
+            ) {
+                BottomBar(navController)
+            }
+        }
+    ) { paddingValues ->
+
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            modifier = Modifier.padding(paddingValues)
+        ) {
+
+            composable(Routes.Login.route) {
+                LoginScreen(navController)
+            }
+
+            composable(Routes.Otp.route) {
+                OtpScreen(navController)
+            }
+
+            composable(Routes.Home.route) {
+                HomeScreen(navController)
+            }
+
+            composable(Routes.Reports.route) {
+                ReportsScreen(navController)
+            }
+
+            composable(Routes.Profile.route) {
+                ProfileScreen(navController)
+            }
+
         }
     }
 }
